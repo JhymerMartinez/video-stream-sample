@@ -9,8 +9,8 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/index.htm'))
 })
 
-app.get('/video', function(req, res) {
-  const path = 'assets/sample.mp4'
+app.get('/video/:videoId', function(req, res) {
+  const path = `assets/${req.params.videoId}`;
   const stat = fs.statSync(path)
   const fileSize = stat.size
   const range = req.headers.range
@@ -26,7 +26,7 @@ app.get('/video', function(req, res) {
       res.status(416).send('Requested range not satisfiable\n'+start+' >= '+fileSize);
       return
     }
-    
+
     const chunksize = (end-start)+1
     const file = fs.createReadStream(path, {start, end})
     const head = {
